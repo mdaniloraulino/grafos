@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;trabalho01.MostraBagaca()&apos; to &apos;MostraRepresentacoes&apos;&#x0D;&#x0A;- Original project: &apos;Grafos_Ex1&apos;&#x0D;&#x0A;- Original element: &apos;trabalho01.MostraBagaca()&apos;&#x0D;&#x0A;- Renamed element: &apos;trabalho01.MostraRepresentacoes()&apos;&#x0D;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;MostraBagaca&apos;" flags="589826" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;{trabalho01.java[trabalho01~MostraBagaca" name="MostraRepresentacoes" references="true" stamp="1522007030909" version="1.0"/>
+</session>
