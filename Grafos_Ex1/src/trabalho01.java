@@ -79,7 +79,7 @@ public class trabalho01 {
 		else
 			return false;
 	}
-
+	//WTF
 	private static void MostraRepresentacoes() {
 		String a = "Lista de Arestas \n";
 		int[][] matrizAdj;
