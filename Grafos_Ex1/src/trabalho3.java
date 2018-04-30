@@ -1,26 +1,27 @@
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.JOptionPane;
 
+
 public class trabalho3 {
 
-	
-	
 	private static String input;
 	private static ArrayList<Aresta> arestas = new ArrayList<Aresta>();
 	private static ArrayList<Vertice> vertices = new ArrayList<Vertice>();
+	private static ArrayList<Aresta> caminhoKruskal = new ArrayList<Aresta>();
 	private static boolean valorado = true;
 	private static boolean orientado = false;
+	private static double custoKruskal = 0;
+	private static double custoPrim = 0;
 
 	public static void main(String[] args) {
 		start();
 	}
 
 	private static void start() {
-
-		if (JOptionPane.showConfirmDialog(null, "Grafo será Orientado?") == 0) {
-			orientado = true;
-		}
 
 		input = JOptionPane.showInputDialog(null);
 		String[] arestasTemp = input.split("/");
@@ -52,6 +53,27 @@ public class trabalho3 {
 			}
 		}
 		ListaAdjacencia();
+		kruskal();
+		prim();
+		String caminho = "Kruskal\n";
+		for (Aresta a : caminhoKruskal) {
+			caminho += a.toString() + "\n";
+		}
+		caminho+= "Custo Total: "+custoKruskal+"\n\n";
+		
+		
+		//mostra prim
+		caminho += "Prim\n";
+		for (Vertice v : vertices) {
+			if (v.getAntecede() != null) {
+				caminho += "("+v.getNome() + " - " + v.getAntecede().getNome()+ ")- V = "+v.getDist()+"\n" ;
+				custoPrim += v.getDist();
+			}
+		}
+		caminho+= "Custo Total: "+custoPrim+"\n\n";	
+		JOptionPane.showMessageDialog(null, caminho);
+
+
 	}
 
 	private static boolean containsVerticeAdj(Vertice v, Vertice verificar) {
@@ -65,9 +87,8 @@ public class trabalho3 {
 		return false;
 	}
 
-
 	private static Vertice getVertice(Double nome) {
-		for (int i = 0;i < vertices.size(); i++) {
+		for (int i = 0; i < vertices.size(); i++) {
 			if (vertices.get(i).getNome() == nome) {
 				return vertices.get(i);
 			}
@@ -98,24 +119,105 @@ public class trabalho3 {
 			}
 		}
 	}
-	
-	private void kruskal(){
+
+	private static void kruskal() {
+		ordenarArestas();
 		
-	}
-	
-	private void prim() {
-		
+		for (Vertice v : vertices) {
+			makeSet(v);
+		}
+
+		for (Aresta aresta : arestas) {
+			Vertice u = getVertice(aresta.getV1().getNome());
+			Vertice v = getVertice(aresta.getV2().getNome());
+			if (findSet(u, v)) {
+				union(u, v);
+				caminhoKruskal.add(aresta);
+				custoKruskal+=aresta.getValor();
+			}
+		}
+
 	}
 
-	
-	private static Aresta getAresta(Vertice v1, Vertice v2) {
-		Aresta verificar = new Aresta(v1, v2, 0);
-		
-			for (Aresta aresta : arestas) {
-				if (VerificaIgualdadeAresta(aresta,verificar)) {
-					return aresta;
+	private static boolean findSet(Vertice v, Vertice v2) {
+		for (Vertice ver : v.getGroup()) {
+			for (Vertice ver2 : v2.getGroup()) {
+				if (ver == ver2) {
+					return false;
 				}
 			}
+		}
+		
+		
+		return true;
+	}
+
+	private static void union(Vertice v, Vertice v2) {
+		if (v.getGroup().size() > v2.getGroup().size()) {
+			for (Vertice vert : v.getGroup()) {
+				if (!v2.getGroup().contains(vert)) {
+					v2.getGroup().add(vert);
+				}
+			}
+			v.setGroup(v2.getGroup());
+		} else {
+			for (Vertice vert : v2.getGroup()) {
+				if (!v.getGroup().contains(vert)) {
+					v.getGroup().add(vert);
+				}
+			}
+			v2.setGroup(v.getGroup());
+		}
+
+	}
+
+	private static void makeSet(Vertice v) {
+		v.getGroup().add(v);
+	}
+
+	private static void prim() {
+		ArrayList<Vertice>vertPrim = new ArrayList<Vertice>();
+		for (Vertice vertice : vertices) {
+			vertice.setDist(Double.POSITIVE_INFINITY);
+			vertPrim.add(new Vertice(vertice));
+		}
+		vertPrim.get(0).setDist(0);
+		Collections.sort(vertPrim);
+		while (vertPrim.size() != 0) {
+			Vertice u = vertPrim.get(0);
+			vertPrim.remove(u);
+			Collections.sort(u.getAdjacentes());
+			for (Vertice v : u.adjacentes) {
+				Aresta w = getAresta(u, v);
+				Vertice v_ref = getVertice(v.getNome());
+				if(containsVertArray(vertPrim, v) && w.getValor() < v.getDist()) {
+					v.setAntecede(u);
+					v.setDist(w.getValor());
+					v_ref.setDist(v.getDist());
+					
+				}
+			}	
+		}
+	}
+	
+	private static boolean containsVertArray(ArrayList<Vertice> a,Vertice v) {
+		
+		for (Vertice vert : a) {
+			if (vert.getNome() == v.getNome()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static Aresta getAresta(Vertice v1, Vertice v2) {
+		Aresta verificar = new Aresta(v1, v2, 0);
+
+		for (Aresta aresta : arestas) {
+			if (VerificaIgualdadeAresta(aresta, verificar)) {
+				return aresta;
+			}
+		}
 		return null;
 	}
 
@@ -167,10 +269,20 @@ public class trabalho3 {
 			return false;
 	}
 
+	public static void ordenarArestas() {
+		Collections.sort(arestas, new Comparator<Aresta>() {
+			public int compare(Aresta edge1, Aresta edge2) {
+				int cmp = Double.compare(edge1.getValor(), edge2.getValor());
+				return cmp;
+			}
+		});
+	}
+
 	private static class Vertice implements Comparable<Vertice> {
 		private double nome;
 		private double dist;
 		private Vertice antecede;
+		private ArrayList<Vertice> group = new ArrayList<Vertice>();
 		private ArrayList<Vertice> adjacentes = new ArrayList<Vertice>();
 
 		public Vertice(Vertice clone) {
@@ -178,6 +290,16 @@ public class trabalho3 {
 			dist = clone.getDist();
 			antecede = clone.getAntecede();
 			adjacentes = clone.getAdjacentes();
+		}
+
+		
+
+		public ArrayList<Vertice> getGroup() {
+			return group;
+		}
+
+		public void setGroup(ArrayList<Vertice> group) {
+			this.group = group;
 		}
 
 		public Vertice() {
@@ -276,6 +398,11 @@ public class trabalho3 {
 			this.valor = valor;
 		}
 
+		@Override
+		public String toString() {
+			// TODO Auto-generated method stub
+			return "(" + v1.getNome() + "," + v2.getNome() + ") - V  = " + valor;
+		}
 	}
 
 }
