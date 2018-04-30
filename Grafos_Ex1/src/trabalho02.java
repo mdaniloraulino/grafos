@@ -5,7 +5,7 @@ import java.util.Collections;
 import javax.swing.JOptionPane;
 
 public class trabalho02 {
-	protected final static int infinito = 99999999;
+	
 
 	private static String input;
 	private static ArrayList<Aresta> arestas = new ArrayList<Aresta>();
@@ -88,7 +88,7 @@ public class trabalho02 {
 				for (int i = caminho.size(); i > 0; i--) {
 					str += caminho.get(i - 1).getNome() + " , ";
 				}
-				str += v.getNome()+" - Custo de - "+v.dist+" \n";
+				str += v.getNome()+" - Custo de : "+v.dist+" \n";
 			}
 		}
 		
@@ -130,7 +130,7 @@ public class trabalho02 {
 
 	private static void dijkstra(ArrayList<Vertice> grafo, Vertice Source) {
 		for (Vertice v : grafo) {
-			v.setDist(infinito);
+			v.setDist(Double.POSITIVE_INFINITY);
 			v.setAntecede(null);
 		}
 		Source.setDist(0);
