@@ -1,3 +1,6 @@
-Exaltasamba,Pagode
-Metallica,Rock
-Megadeth,Rock.
+Exaltasamba,Pagode,19
+Metallica,Rock,17
+Megadeth,Rock,19
+Lady Gaga,Pop,22
+Skrillex,Eletronica,22
+Deadmau5,Eletronica,22.
