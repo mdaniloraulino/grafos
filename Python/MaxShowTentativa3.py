@@ -80,7 +80,7 @@ def adicionaCor(vertice):
     possiveis.sort()
     vertice.dia = possiveis[0]
             
-def weshPowell(vList):
+def welshPowell(vList):
     g = sorted(vList,key = lambda vertice: len(vertice.adj),reverse=True )
     for v in g:
         adicionaCor(v)
@@ -88,23 +88,22 @@ def weshPowell(vList):
     fileRes = open('cronograma.txt','w')
     
     
-    i = 0
+    i = 1
     lines = ''
-    while i < len(cores):
+    while i < len(cores)+1:
         diaVazio = True        
-        lines = lines + f'Bandas dias {i}:\n'
-        diaAtual = ''
+        diaAtual = f'Bandas no Dia {i}:\n'
         for v in g:
             if v.dia == i:
-                diaAtual = diaAtual + f'   {v.id}\n'
+                diaAtual = diaAtual + f'   {v.id} Horario: {v.horario}hrs\n'
                 diaVazio = False
         if not diaVazio:
             lines = lines + diaAtual
         i+=1
     fileRes.write(lines)
-    fileRes.close     
+    fileRes.close
 
-weshPowell(vertices)
+welshPowell(vertices)
             
 
             
