@@ -88,9 +88,8 @@ def welshPowell(vList):
     fileRes = open('cronograma.txt','w')
     
     
-    i = 1
     lines = ''
-    while i < len(cores)+1:
+    for i in range(len(cores)+1):
         diaVazio = True        
         diaAtual = f'Bandas no Dia {i}:\n'
         for v in g:
@@ -99,7 +98,7 @@ def welshPowell(vList):
                 diaVazio = False
         if not diaVazio:
             lines = lines + diaAtual
-        i+=1
+        
     fileRes.write(lines)
     fileRes.close
 
